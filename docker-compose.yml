@@ -1,0 +1,22 @@
+services:
+  edx-imt:
+    image: cross7heroad/edx:imt-1.0.0
+    container_name: edx-imt
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - edx_proxy
+
+    labels:
+      - "traefik.enable=true"
+
+      # HTTPS router
+      - "traefik.http.routers.edx-imt.entrypoints=websecure"
+      - "traefik.http.routers.edx-imt.rule=Host(`api.mydomain.com`) && PathPrefix(`/api/v1/imt`)"
+      - "traefik.http.routers.edx-imt.tls=true"
+      - "traefik.http.routers.edx-imt.tls.certresolver=le"
+
+networks:
+  edx_proxy:
+    external: true
+    name: edx_proxy
